@@ -31,8 +31,8 @@ type Game struct {
 	winner   Mark
 }
 
-func NewGame() *Game {
-	return &Game{
+func NewGame() Game {
+	return Game{
 		state:    [9]Mark{None, None, None, None, None, None, None, None, None},
 		finished: false,
 		winner:   None,
