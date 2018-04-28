@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	gt := GenerateGameTree()
+	gt := GenerateGameGraph()
 
 	fmt.Println(gt)
 }

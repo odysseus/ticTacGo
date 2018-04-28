@@ -1,10 +1,12 @@
 package main
 
-func GenerateGameTree() *GameTree {
-	return recursiveTreeGenerate(NewGame(), 0, -1)
+var Explored map[Game]*GameTree = make(map[Game]*GameTree)
+
+func GenerateGameGraph() *GameTree {
+	return recursiveGraphGenerate(NewGame(), 0, -1)
 }
 
-func recursiveTreeGenerate(g Game, depth, position int) *GameTree {
+func recursiveGraphGenerate(g Game, depth, position int) *GameTree {
 	// Create a new gametree node with a copy of the parent's game
 	gt := &GameTree{
 		game:            g,
@@ -25,6 +27,12 @@ func recursiveTreeGenerate(g Game, depth, position int) *GameTree {
 		} else {
 			gt.game.state[position] = X
 		}
+	}
+
+	if val, exists := Explored[gt.game]; exists {
+		return val
+	} else {
+		Explored[gt.game] = gt
 	}
 
 	// Check to see if the game is continuing.
@@ -48,7 +56,12 @@ func recursiveTreeGenerate(g Game, depth, position int) *GameTree {
 	// If we have blank spaces still then fill them
 	for i, val := range gt.game.state {
 		if val == None {
-			child := recursiveTreeGenerate(gt.game, gt.depth+1, i)
+			child := recursiveGraphGenerate(gt.game, gt.depth+1, i)
+
+			if child == nil {
+				continue
+			}
+
 			gt.children = append(gt.children, child)
 			gt.subtreeNodes += child.subtreeNodes
 			gt.subtreeLeaves += child.subtreeLeaves
