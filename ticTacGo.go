@@ -1,0 +1,122 @@
+package main
+
+import (
+	"fmt"
+)
+
+type Mark int
+
+const (
+	None Mark = iota
+	X
+	O
+)
+
+func (m Mark) String() string {
+	switch m {
+	case 0:
+		return " "
+	case 1:
+		return "X"
+	case 2:
+		return "O"
+	default:
+		return fmt.Sprintf("%v", int64(m))
+	}
+}
+
+type Game struct {
+	state    [9]Mark
+	finished bool
+	winner   Mark
+}
+
+func NewGame() *Game {
+	return &Game{
+		state:    [9]Mark{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		finished: false,
+		winner:   None,
+	}
+}
+
+func (g *Game) String() string {
+	var result string
+	if g.goalTest(); g.finished {
+		if g.winner == None {
+			result = "GAME OVER: Draw!"
+		} else {
+			result = fmt.Sprintf("GAME OVER: %v is the winner!", g.winner)
+		}
+	} else {
+		result = "STATUS: Neither player has won yet"
+	}
+
+	return fmt.Sprintf(
+		"\n     |     |     \n"+
+			"  %v  |  %v  |  %v  \n"+
+			"     |     |     \n"+
+			"-----------------\n"+
+			"     |     |     \n"+
+			"  %v  |  %v  |  %v  \n"+
+			"     |     |     \n"+
+			"-----------------\n"+
+			"     |     |     \n"+
+			"  %v  |  %v  |  %v  \n"+
+			"     |     |     \n"+
+			"%v\n",
+		g.state[0], g.state[1], g.state[2],
+		g.state[3], g.state[4], g.state[5],
+		g.state[6], g.state[7], g.state[8],
+		result)
+}
+
+func (g *Game) move(player Mark, index int) {
+	g.state[index-1] = player
+}
+
+func (g *Game) hasEmptySpaces() bool {
+	for _, val := range g.state {
+		if val == None {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (g *Game) goalTest() {
+	rows := [8][3]int{
+		{0, 1, 2}, {3, 4, 5}, {6, 7, 8},
+		{0, 3, 6}, {1, 4, 7}, {2, 5, 8},
+		{0, 4, 8}, {6, 4, 2}}
+
+	for _, row := range rows {
+		if g.state[row[0]] == g.state[row[1]] &&
+			g.state[row[1]] == g.state[row[2]] {
+			g.finished = true
+			g.winner = g.state[row[0]]
+			return
+		}
+	}
+
+	if !g.hasEmptySpaces() {
+		g.finished = true
+	}
+}
+
+func main() {
+	fmt.Println("Hello, world!")
+	game := NewGame()
+
+	game.move(X, 1)
+	game.move(X, 2)
+	game.move(O, 3)
+	game.move(O, 4)
+	game.move(X, 5)
+	game.move(O, 6)
+	game.move(X, 7)
+	game.move(O, 8)
+	game.move(O, 9)
+
+	fmt.Println(game)
+}
