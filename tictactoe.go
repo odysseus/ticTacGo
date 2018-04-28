@@ -33,7 +33,7 @@ type Game struct {
 
 func NewGame() *Game {
 	return &Game{
-		state:    [9]Mark{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		state:    [9]Mark{None, None, None, None, None, None, None, None, None},
 		finished: false,
 		winner:   None,
 	}
@@ -48,7 +48,7 @@ func (g *Game) String() string {
 			result = fmt.Sprintf("GAME OVER: %v is the winner!", g.winner)
 		}
 	} else {
-		result = "STATUS: Neither player has won yet"
+		result = "STATUS: The game is not finished"
 	}
 
 	return fmt.Sprintf(
@@ -63,7 +63,7 @@ func (g *Game) String() string {
 			"     |     |     \n"+
 			"  %v  |  %v  |  %v  \n"+
 			"     |     |     \n"+
-			"%v\n",
+			"\n%v\n",
 		g.state[0], g.state[1], g.state[2],
 		g.state[3], g.state[4], g.state[5],
 		g.state[6], g.state[7], g.state[8],
@@ -91,7 +91,9 @@ func (g *Game) goalTest() {
 		{0, 4, 8}, {6, 4, 2}}
 
 	for _, row := range rows {
-		if g.state[row[0]] == g.state[row[1]] &&
+		if g.state[row[0]] == None {
+			break
+		} else if g.state[row[0]] == g.state[row[1]] &&
 			g.state[row[1]] == g.state[row[2]] {
 			g.finished = true
 			g.winner = g.state[row[0]]
@@ -102,21 +104,4 @@ func (g *Game) goalTest() {
 	if !g.hasEmptySpaces() {
 		g.finished = true
 	}
-}
-
-func main() {
-	fmt.Println("Hello, world!")
-	game := NewGame()
-
-	game.move(X, 1)
-	game.move(X, 2)
-	game.move(O, 3)
-	game.move(O, 4)
-	game.move(X, 5)
-	game.move(O, 6)
-	game.move(X, 7)
-	game.move(O, 8)
-	game.move(O, 9)
-
-	fmt.Println(game)
 }
