@@ -1,11 +1,9 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
 func main() {
-	gt := GenerateGameGraph()
+	gt := GenerateGameTree()
 
 	fmt.Println(gt)
 }

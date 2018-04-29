@@ -70,6 +70,22 @@ func (g *Game) String() string {
 		result)
 }
 
+func gameFromString(state string) Game {
+	g := NewGame()
+	for i, v := range state {
+		switch v {
+		case 'X':
+			g.state[i] = X
+		case 'O':
+			g.state[i] = O
+		default:
+			g.state[i] = None
+		}
+	}
+
+	return g
+}
+
 func (g *Game) move(player Mark, index int) {
 	g.state[index-1] = player
 }
@@ -88,11 +104,11 @@ func (g *Game) goalTest() {
 	rows := [8][3]int{
 		{0, 1, 2}, {3, 4, 5}, {6, 7, 8},
 		{0, 3, 6}, {1, 4, 7}, {2, 5, 8},
-		{0, 4, 8}, {6, 4, 2}}
+		{0, 4, 8}, {2, 4, 6}}
 
 	for _, row := range rows {
 		if g.state[row[0]] == None {
-			break
+			continue
 		} else if g.state[row[0]] == g.state[row[1]] &&
 			g.state[row[1]] == g.state[row[2]] {
 			g.finished = true
